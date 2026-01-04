@@ -1,1 +1,185 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
 
+= rescript-poly-core
+:toc:
+:toc-placement: preamble
+:icons: font
+
+**Shared foundation library for the Hyperpolymath ReScript ecosystem.**
+
+Part of the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ecosystem.
+
+== Features
+
+* **Core utilities** - Result extensions, async helpers, structured logging, config loading
+* **MCP infrastructure** - Protocol types, server builder, tool registration
+* **Reusable patterns** - Common abstractions used across poly-* projects
+* **Zero external dependencies** - Only requires @rescript/core
+
+== Installation
+
+[source,bash]
+----
+deno add jsr:@hyperpolymath/rescript-poly-core
+----
+
+== Modules
+
+=== Core.Result
+
+Extended Result type utilities for error handling.
+
+[source,rescript]
+----
+open PolyCore
+
+// Chain results
+let result = Ok(42)
+  ->Result.map(x => x * 2)
+  ->Result.flatMap(x => if x > 50 { Ok(x) } else { Error("Too small") })
+
+// Collect all or fail
+let results = Result.all([Ok(1), Ok(2), Ok(3)])  // Ok([1, 2, 3])
+
+// Try/catch to Result
+let parsed = Result.tryCatch(
+  () => JSON.parseExn(input),
+  _ => "Invalid JSON"
+)
+----
+
+=== Core.Async
+
+Promise utilities for async operations.
+
+[source,rescript]
+----
+open PolyCore
+
+// Sleep
+await Async.sleep(1000)
+
+// Timeout
+let result = await Async.timeout(5000, fetchData())
+
+// Retry with exponential backoff
+let data = await Async.retry(
+  ~config={maxAttempts: 3, initialDelayMs: 1000, maxDelayMs: 30000, backoffMultiplier: 2.0},
+  () => fetchUnreliableApi()
+)
+
+// Parallel with concurrency limit
+let results = await Async.parallelLimit(~concurrency=5, tasks)
+
+// Debounce/throttle
+let debouncedSave = Async.debounce(500, data => save(data))
+----
+
+=== Core.Logger
+
+Structured JSON logging.
+
+[source,rescript]
+----
+open PolyCore
+
+let logger = Logger.make(~config={
+  minLevel: Logger.Debug,
+  json: true,
+  timestamps: true,
+  context: Dict.fromArray([("service", "my-app")]),
+})
+
+logger->Logger.info("Server started", ~extra=Dict.fromArray([
+  ("port", JSON.Encode.int(8080)),
+]))
+
+// Child logger with additional context
+let reqLogger = logger->Logger.child(Dict.fromArray([
+  ("requestId", "abc123"),
+]))
+----
+
+=== Core.Config
+
+Configuration loading from environment.
+
+[source,rescript]
+----
+open PolyCore
+
+let config = Config.fromEnv(~prefix="APP_")
+
+let port = config->Config.getIntOr("PORT", 3000)
+let debug = config->Config.getBoolOr("DEBUG", false)
+let dbUrl = config->Config.getString("DATABASE_URL")  // throws if missing
+----
+
+=== MCP.Protocol
+
+MCP protocol types and builders.
+
+[source,rescript]
+----
+open PolyCore.MCP
+
+// Build tool results
+let result = Protocol.success("Operation completed")
+let jsonResult = Protocol.successJson({"count": 42})
+let errorResult = Protocol.error("Something went wrong")
+
+// Build schemas
+let schema = Protocol.objectSchema(
+  ~properties=Dict.fromArray([
+    ("name", Protocol.stringProp(~description="The user's name")),
+    ("age", Protocol.numberProp(~description="Age in years")),
+  ]),
+  ~required=["name"],
+)
+
+// Parse arguments
+let name = Protocol.requireArg(args, "name")
+let limit = Protocol.getIntArg(args, "limit")->Option.getOr(10)
+----
+
+=== MCP.Server
+
+MCP server builder.
+
+[source,rescript]
+----
+open PolyCore.MCP
+
+let server = Server.make(~name="my-mcp", ~version="1.0.0")
+  ->Server.registerTool(
+    {
+      name: "greet",
+      description: "Greet a user",
+      inputSchema: Protocol.objectSchema(
+        ~properties=Dict.fromArray([
+          ("name", Protocol.stringProp(~description="Name to greet")),
+        ]),
+        ~required=["name"],
+      ),
+    },
+    async args => {
+      switch Protocol.requireArg(args, "name") {
+      | Ok(name) => Protocol.success(`Hello, ${name}!`)
+      | Error(e) => Protocol.error(e)
+      }
+    },
+  )
+
+// Handle incoming requests
+let response = await server->Server.handleRequest("tools/call", Some(params))
+----
+
+== Related
+
+* https://github.com/hyperpolymath/rescript-full-stack[rescript-full-stack] - Full ecosystem overview
+* https://github.com/hyperpolymath/poly-mcps[poly-mcps] - MCP servers using this library
+
+== Licence
+
+AGPL-3.0-or-later
