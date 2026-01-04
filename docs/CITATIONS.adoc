@@ -1,34 +1,38 @@
-= RSR-template-repo - Citation Guide
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-poly-core - Citation Guide
 :toc:
 
 == BibTeX
 
 [source,bibtex]
 ----
-@software{rsr-template-repo_2025,
+@software{rescript_poly_core_2025,
   author = {Polymath, Hyper},
-  title = {RSR-template-repo},
+  title = {rescript-poly-core: Shared Foundation Library for ReScript},
   year = {2025},
-  url = {https://github.com/hyperpolymath/RSR-template-repo},
-  license = {AGPL-3.0-or-later}
+  url = {https://github.com/hyperpolymath/rescript-poly-core},
+  license = {AGPL-3.0-or-later},
+  version = {0.1.0}
 }
 ----
 
 == Harvard Style
 
-Polymath, H. (2025) _RSR-template-repo_ [Computer software]. Available at: https://github.com/hyperpolymath/RSR-template-repo
+Polymath, H. (2025) _rescript-poly-core: Shared Foundation Library for ReScript_ [Computer software]. Available at: https://github.com/hyperpolymath/rescript-poly-core
 
 == OSCOLA
 
-Hyper Polymath, 'RSR-template-repo' (2025) <https://github.com/hyperpolymath/RSR-template-repo>
+Hyper Polymath, 'rescript-poly-core: Shared Foundation Library for ReScript' (2025) <https://github.com/hyperpolymath/rescript-poly-core>
 
 == MLA
 
-Polymath, Hyper. "RSR-template-repo." 2025, github.com/hyperpolymath/RSR-template-repo.
+Polymath, Hyper. "rescript-poly-core: Shared Foundation Library for ReScript." 2025, github.com/hyperpolymath/rescript-poly-core.
 
 == APA 7
 
-Polymath, H. (2025). _RSR-template-repo_ [Computer software]. GitHub. https://github.com/hyperpolymath/RSR-template-repo
+Polymath, H. (2025). _rescript-poly-core: Shared Foundation Library for ReScript_ (Version 0.1.0) [Computer software]. GitHub. https://github.com/hyperpolymath/rescript-poly-core
 
 == See Also
 
