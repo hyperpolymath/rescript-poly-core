@@ -93,7 +93,7 @@ just test:coverage
 
 == License
 This project is licensed under:
-- link:licences/AGPL-3.0-or-later.txt[AGPL-3.0-or-later]
+- link:licences/PMPL-1.0-or-later.txt[PMPL-1.0-or-later]
 - link:licences/MIT.txt[MIT]
 - link:licences/Palimpsest-v0.4.txt[Palimpsest v0.4]
 
